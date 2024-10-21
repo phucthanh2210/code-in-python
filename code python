@@ -1,0 +1,47 @@
+import time
+from threading import Thread, Lock
+import sys
+
+lock = Lock()
+
+def animate_text(text, delay=0.1):
+    with lock:
+        for char in text:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(delay)
+        print()
+
+def sing_lyric(lyric, delay, speed):
+    time.sleep(delay)
+    animate_text(lyric, speed)
+
+def sing_song():
+    lyrics = [
+        ("Lately, I feel like I'm too attached", 0.07),
+        ("We're stuck in the moment", 0.07),
+        ("Not thinking 'bout how we move too fast?", 0.06),
+        ("But I kinda like it this way", 0.07),
+        ("Who gives a fuck what they say",0.07), 
+        ("It's you and me right now, baby",0.1), 
+        ("Can't even think, I've been losing track?", 0.07),
+        ("I'm stuck in the middle", 0.07),
+        ("Start thinking 'bout how you do me like that", 0.06),
+        ("But I kinda like it this way", 0.07),
+        ("Who gives a fuck what they say",0.07), 
+         ("It's you and me right now, baby",0.1), 
+    ]
+    delays = [0.3, 0.4, 3.9, 6.0, 6.3, 6.6, 16.0, 16.1, 16.2, 16.3, 16.4, 16.5]
+    
+    threads = []
+    for i in range(len(lyrics)):
+        lyric, speed = lyrics[i]
+        t = Thread(target=sing_lyric, args=(lyric, delays[i], speed))
+        threads.append(t)
+        t.start()
+    
+    for thread in threads:
+        thread.join()
+
+if __name__ == "__main__":
+    sing_song()
